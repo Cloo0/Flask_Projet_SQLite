@@ -79,3 +79,15 @@ def enregistrer_client():
                                                                                                                                        
 if __name__ == "__main__":
   app.run(debug=True)
+    
+@app.route('/fiche_nom/',methods=['GET', 'POST'])
+def recherche_client():
+    nom = request.form['Nom']
+
+    # Connexion à la base de données
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    # Exécution de la requête SQL pour chercher les clients avec le nom donné
+    cursor.execute('SELECT * FROM clients WHERE name=?',(nom))
+return render_template ('read_data.html', data=data)
