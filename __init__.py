@@ -90,4 +90,4 @@ def recherche_client():
 
     # Exécution de la requête SQL pour chercher les clients avec le nom donné
     cursor.execute('SELECT * FROM clients WHERE name=?',(nom))
-return render_template ('ajouter_client.html', data=data)
+return render_template ('read_data.html', data=data)
