@@ -76,18 +76,29 @@ def enregistrer_client():
     conn.commit()
     conn.close()
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
-                                                                                                                                       
-if __name__ == "__main__":
-  app.run(debug=True)
-    
-@app.route('/fiche_nom/',methods=['GET', 'POST'])
+
+
+@app.route('/banane', methods=['GET', 'POST'])
 def recherche_client():
-    nom = request.form['Nom']
+    if request.method == 'GET':
+        return render_template('fiche_nom.html')
+
+
+    nom = request.form['nom']
 
     # Connexion à la base de données
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
 
     # Exécution de la requête SQL pour chercher les clients avec le nom donné
-    cursor.execute('SELECT * FROM clients WHERE name=?',(nom))
-    return render_template('fiche_nom.html')
+    cursor.execute('SELECT * FROM clients WHERE nom = ?;', (nom,))
+    test = cursor.fetchall()
+    if not test:  # Si aucun résultat trouvé
+        return render_template('read_data.html', data=None,
+                               message="Aucun client trouvé avec ce nom.")  # Passez un message à afficher
+    return render_template('read_data.html', data=test)
+    conn.close()
+    return render_template('read_data.html', data=test)
+
+if __name__ == "__main__":
+  app.run(debug=True)
