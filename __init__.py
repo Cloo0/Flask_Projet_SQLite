@@ -31,6 +31,9 @@ def authentification():
         # Vérifier les identifiants
         if request.form['username'] == 'admin' and request.form['password'] == 'password': # password à cacher par la suite
             session['authentifie'] = True
+            if request.form['username'] == 'user' and request.form[
+                '12345'] == 'password':  # password à cacher par la suite
+                session['authentifie'] = True
             # Rediriger vers la route lecture après une authentification réussie
             return redirect(url_for('lecture'))
         else:
@@ -78,8 +81,10 @@ def enregistrer_client():
     return redirect('/consultation/')  # Rediriger vers la page d'accueil après l'enregistrement
 
 
-@app.route('/banane', methods=['GET', 'POST'])
+@app.route('/fiche_nom', methods=['GET', 'POST'])
 def recherche_client():
+    if not est_authentifie():
+        return redirect(url_for('authentification'))
     if request.method == 'GET':
         return render_template('fiche_nom.html')
 
@@ -93,12 +98,11 @@ def recherche_client():
     # Exécution de la requête SQL pour chercher les clients avec le nom donné
     cursor.execute('SELECT * FROM clients WHERE nom = ?;', (nom,))
     test = cursor.fetchall()
-    if not test:  # Si aucun résultat trouvé
-        return render_template('read_data.html', data=None,
-                               message="Aucun client trouvé avec ce nom.")  # Passez un message à afficher
-    return render_template('read_data.html', data=test)
     conn.close()
-    return render_template('read_data.html', data=test)
+    if not test:
+        return render_template('fiche_nom.html', error=True)
+    else:
+        return render_template('read_data.html', data=test)
 
 if __name__ == "__main__":
   app.run(debug=True)
