@@ -24,23 +24,41 @@ def lecture():
 
   # Si l'utilisateur est authentifié
     return "<h2>Bravo, vous êtes authentifié</h2>"
+@app.route('/create_account', methods = ['GET', 'POST'])
+def create_account():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        role = request.form['role']
 
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, password, role))
+        conn.commit()
+        conn.close()
+        session['authentifie'] = True
+        return redirect(url_for('lecture'))
+    return render_template('create_account.html')
 @app.route('/authentification', methods=['GET', 'POST'])
 def authentification():
     if request.method == 'POST':
-        # Vérifier les identifiants
-        if request.form['username'] == 'admin' and request.form['password'] == 'password': # password à cacher par la suite
-            session['authentifie'] = True
-            if request.form['username'] == 'user' and request.form[
-                '12345'] == 'password':  # password à cacher par la suite
-                session['authentifie'] = True
-            # Rediriger vers la route lecture après une authentification réussie
-            return redirect(url_for('lecture'))
-        else:
-            # Afficher un message d'erreur si les identifiants sont incorrects
-            return render_template('formulaire_authentification.html', error=True)
+        username = request.form['username']
+        password = request.form['password']
 
-    return render_template('formulaire_authentification.html', error=False)
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT username, password, role FROM users WHERE username = ?', (username,))
+        user = cursor.fetchone()
+        conn.close()
+
+        if user:
+            db_username, db_password, db_role = user
+            if db_password == password:
+                session['authentifie'] = True
+                return redirect(url_for('lecture'))
+
+        return render_template('formulaire_authentification.html', error = True)
+    return render_template('formulaire_authentification.html', error = False)
 
 @app.route('/fiche_client/<int:post_id>')
 def Readfiche(post_id):

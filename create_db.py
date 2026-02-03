@@ -16,5 +16,7 @@ cur.execute("INSERT INTO clients (nom, prenom, adresse) VALUES (?, ?, ?)",('GAGN
 cur.execute("INSERT INTO clients (nom, prenom, adresse) VALUES (?, ?, ?)",('DUBOIS', 'Charlotte', '789, Rue des Roses, 13005 Marseille'))
 cur.execute("INSERT INTO clients (nom, prenom, adresse) VALUES (?, ?, ?)",('LEFEVRE', 'Thomas', '333, Rue de la Paix, 75002 Paris'))
 
+cur.execute("INSERT INTO users (username, password,role) VALUES(?, ?, ?)",('admin', 'password','admin'))
+cur.execute("INSERT INTO users (username, password,role) VALUES (?, ?, ?)",('user', '12345','default'))
 connection.commit()
 connection.close()

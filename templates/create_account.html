@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un compte</title>
+</head>
+<body>
+<h1>Créer un compte</h1>
+<form action="{{ url_for('create_account') }}" method="POST">
+ {% if error %}
+        <p style="color: red;">Une erreur est survenue</p>
+    {% endif %}
+        <label for="username">Nom d'utilisateur:</label><br>
+        <input type="text" id="username" name="username"><br>
+        <label for="password">Mot de passe:</label><br>
+        <input type="password" id="password" name="password"><br><br>
+
+        <legend>Accès</legend>
+            <div>
+                <input type="radio" id="admin" name="role" value="admin" checked />
+                <label for="admin">admin</label>
+            </div>
+        <div>
+            <input type="radio" id="user" name="role" value="user" />
+            <label for="user">user</label>
+        </div>
+        <input type="submit" value="Créer un compte">
+    </form>
+</body>
+</html>
