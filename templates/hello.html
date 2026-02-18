@@ -1,15 +1,154 @@
-<!doctype html>
-<title>Flask Server</title>
-<h1>Bibliothèque</h1>
-<nav>
-  <ul>
-    <li><a href="{{ url_for('create_account') }}">Créer un compte</a></li>
-  </ul>
-</nav>
-<H1>Task Tracker</H1>
-<nav>
-  <ul>
-    <li><a href="{{ url_for('add_task') }}">Ajouter une tâche</a></li>
-    <li><a href="{{ url_for('read_tasks') }}">Voir les tâches</a></li>
-  </ul>
-</nav>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - Task Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --primary: #38bdf8;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --border: #334155;
+            --accent: #818cf8;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 1.5rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 2.5rem;
+        }
+
+        .brand-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 16px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin: 0;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+
+        h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+            margin: 2rem 0 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .nav a {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 1rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav a:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .nav a::after {
+            content: '→';
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .nav a:hover::after {
+            opacity: 1;
+        }
+
+        .footer-tag {
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <div class="brand-icon">⚡</div>
+        <h1 class="title">Flask Server</h1>
+        <p class="subtitle">Gestionnaire de services</p>
+      </div>
+
+      <h2>Bibliothèque</h2>
+      <div class="nav" style="margin-bottom: 1.5rem;">
+        <a href="{{ url_for('create_account') }}">Créer un compte client</a>
+      </div>
+
+      <h2>Task Tracker</h2>
+      <div class="nav">
+        <a href="{{ url_for('add_task') }}">Ajouter une mission</a>
+        <a href="{{ url_for('read_tasks') }}">Consulter la liste</a>
+      </div>
+
+      <div class="footer-tag">Projet IT • 2024</div>
+    </div>
+  </div>
+</body>
+</html>

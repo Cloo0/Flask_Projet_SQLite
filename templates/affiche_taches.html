@@ -1,45 +1,318 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>Liste des tâches</title>
-    <style>.termine { text-decoration: line-through; color: green; }</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker - Liste</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --border: #334155;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Topbar Luxe */
+        .topbar {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 0.75rem 2rem;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .brand-mark {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            border-radius: 8px;
+        }
+
+        /* Cards & Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Toolbar & Filtres */
+        .toolbar {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .kpi {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; font-weight: bold; color: var(--primary); }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .input {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .input:focus { border-color: var(--primary); }
+
+        .chips { display: flex; gap: 0.5rem; }
+
+        .chip {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .chip[aria-pressed="true"] {
+            background: var(--primary);
+            color: #0f172a;
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Table Design */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        .table th {
+            background: rgba(15, 23, 42, 0.5);
+            text-align: left;
+            padding: 1rem;
+            color: var(--muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .table td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table tr:hover { background: rgba(255,255,255,0.02); }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .badge.todo { background: rgba(56, 189, 248, 0.15); color: var(--primary); }
+        .badge.ok { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+
+        .termine td { opacity: 0.5; }
+        .termine td:first-child { text-decoration: line-through; }
+
+        /* Buttons */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            border: none;
+        }
+
+        .btn.primary { background: var(--primary); color: #0f172a; }
+        .btn.primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+        .btn.danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .btn.danger:hover { background: var(--danger); color: white; }
+
+        /* Custom Checkbox */
+        input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: var(--success);
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Mes Tâches</h1>
-    <table border="1">
-        <tr>
-            <th>Titre</th>
-            <th>Description</th>
-            <th>Échéance</th>
-            <th>Statut</th>
-            <th>Terminée ?</th>
-            <th>Actions</th>
-        </tr>
-        {% for tache in taches %}
-        <tr class="{{ 'termine' if tache[4] else '' }}">
-            <td>{{ tache[1] }}</td>
-            <td>{{ tache[2] }}</td>
-            <td>{{ tache[3] }}</td>
-            <td>{{ "Terminée" if tache[4] else "En cours" }}</td>
-            <td>
-                <form method="POST" action="/terminer/{{ tache[0] }}" style="display:inline;">
-                    <input type="hidden" name="est_terminee" value="0">
-                    <input
-                        type="checkbox"
-                        name="est_terminee"
-                        value="1"
-                        {% if tache[4] %}checked{% endif %}
-                        onchange="this.form.submit()"
-                    >
-                </form>
-            </td>
-            <td>
-                <a href="/supprimer/{{ tache[0] }}" style="color:red;">Supprimer</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <br>
-    <a href="{{ url_for('add_task') }}">Ajouter une autre tâche</a> | <a href="/">Accueil</a>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="/">
+                <div class="brand-mark"></div>
+                <div>
+                    <div style="font-weight: 800; font-size: 1.1rem; letter-spacing: -0.5px;">TaskTracker</div>
+                    <div style="font-size: 0.7rem; color: var(--muted); text-transform: uppercase;">Workspace</div>
+                </div>
+            </a>
+            <div style="display:flex; gap:12px;">
+                <a class="btn" href="/" style="color: var(--muted);">Accueil</a>
+                <a class="btn primary" href="{{ url_for('add_task') }}">+ Nouvelle Tâche</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <div class="toolbar">
+                <div class="kpi">
+                    Statistiques : <span class="mono">{{ taches|length }}</span> tâche(s) enregistrée(s)
+                </div>
+                <div class="controls">
+                    <input class="input" id="q" type="text" placeholder="Rechercher une tâche..." style="flex-grow: 1; max-width: 400px;">
+                    <div class="chips">
+                        <button class="chip" data-filter="all" aria-pressed="true">Toutes</button>
+                        <button class="chip" data-filter="todo">En cours</button>
+                        <button class="chip" data-filter="done">Terminées</button>
+                    </div>
+                </div>
+            </div>
+
+            {% if not taches %}
+                <div style="padding: 4rem; text-align: center; color: var(--muted);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📝</div>
+                    <p>Votre liste est vide pour le moment.</p>
+                </div>
+            {% else %}
+                <div style="overflow-x: auto;">
+                    <table class="table" id="tasks">
+                        <thead>
+                            <tr>
+                                <th>Mission</th>
+                                <th>Description</th>
+                                <th>Échéance</th>
+                                <th>État</th>
+                                <th>Fini ?</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tache in taches %}
+                            <tr class="{{ 'termine' if tache[4] else '' }}" data-done="{{ 1 if tache[4] else 0 }}">
+                                <td style="font-weight: 600; color: white;">{{ tache[1] }}</td>
+                                <td style="color: var(--muted); max-width: 300px;">{{ tache[2] if tache[2] else "—" }}</td>
+                                <td class="mono" style="font-size: 0.85rem;">{{ tache[3] }}</td>
+                                <td>
+                                    <span class="badge {{ 'ok' if tache[4] else 'todo' }}">
+                                        {{ "Terminée" if tache[4] else "En cours" }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <form method="POST" action="/terminer/{{ tache[0] }}">
+                                        <input type="hidden" name="est_terminee" value="0">
+                                        <input
+                                            type="checkbox"
+                                            name="est_terminee"
+                                            value="1"
+                                            {% if tache[4] %}checked{% endif %}
+                                            onchange="this.form.submit()"
+                                            aria-label="Marquer comme terminée"
+                                        >
+                                    </form>
+                                </td>
+                                <td>
+                                    <a href="/supprimer/{{ tache[0] }}" class="btn danger" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Supprimer</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+      (function () {
+        const q = document.getElementById('q');
+        const table = document.getElementById('tasks');
+        if (!q || !table) return;
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+        const chips = Array.from(document.querySelectorAll('.chip'));
+        let currentFilter = 'all';
+
+        function apply() {
+          const term = (q.value || '').trim().toLowerCase();
+          rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            const done = row.getAttribute('data-done') === '1';
+            const matchText = term === '' || text.includes(term);
+            const matchStatus = currentFilter === 'all' || (currentFilter === 'done' && done) || (currentFilter === 'todo' && !done);
+            row.style.display = (matchText && matchStatus) ? '' : 'none';
+          });
+        }
+
+        q.addEventListener('input', apply);
+        chips.forEach(c => c.addEventListener('click', () => {
+          chips.forEach(b => b.setAttribute('aria-pressed', 'false'));
+          c.setAttribute('aria-pressed', 'true');
+          currentFilter = c.dataset.filter;
+          apply();
+        }));
+
+        apply();
+      })();
+    </script>
 </body>
 </html>

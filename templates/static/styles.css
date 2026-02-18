@@ -1,0 +1,104 @@
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --primary: #38bdf8;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --danger: #ef4444;
+    --success: #22c55e;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.topbar {
+    background: var(--card);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #334155;
+    margin-bottom: 2rem;
+}
+
+.topbar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.table th {
+    text-align: left;
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    padding: 1rem;
+    border-bottom: 1px solid #334155;
+}
+
+.table td {
+    padding: 1rem;
+    border-bottom: 1px solid #334155;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.badge.todo { background: rgba(56, 189, 248, 0.2); color: var(--primary); }
+.badge.ok { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+
+.termine td {
+    opacity: 0.6;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn.primary { background: var(--primary); color: #000; }
+.btn.danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+.btn.danger:hover { background: var(--danger); color: white; }
+
+.input {
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    width: 300px;
+}
+
+.

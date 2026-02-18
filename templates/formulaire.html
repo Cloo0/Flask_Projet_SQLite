@@ -3,16 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulaire d'enregistrement d'un nouveau client</title>
+    <title>Enregistrer un nouveau client</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Enregistrer un nouveau client</h1>
-    <form action="./enregistrer_client" method="POST">
-        <label for="nom">Nom :</label>
-        <input type="text" id="nom" name="nom" required><br><br>
-        <label for="prenom">Prénom :</label>
-        <input type="text" id="prenom" name="prenom" required><br><br>
-        <button type="submit">Enregistrer</button>
-    </form>
+    <div class="container">
+        <div class="card">
+            <h1 class="title">Enregistrer un nouveau client</h1>
+            <p class="subtitle">Remplissez les informations du client puis validez.</p>
+
+            <form class="form" action="./enregistrer_client" method="POST">
+                <div class="field">
+                    <label for="nom">Nom</label>
+                    <input class="input" type="text" id="nom" name="nom" required>
+                </div>
+
+                <div class="field">
+                    <label for="prenom">Prénom</label>
+                    <input class="input" type="text" id="prenom" name="prenom" required>
+                </div>
+
+                <div class="actions">
+                    <button class="btn primary" type="submit">Enregistrer</button>
+                    <a class="btn" href="/">Accueil</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
