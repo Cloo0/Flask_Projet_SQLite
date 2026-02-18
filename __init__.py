@@ -136,7 +136,6 @@ def recherche_client():
     else:
         return render_template('read_data.html', data=test)
 
-@app.route('/formulaire_taches', methods=['GET', 'POST'])
 @app.route('/new-task', methods=['GET', 'POST'])
 def add_task():
     if request.method == 'POST':
@@ -174,21 +173,5 @@ def supprimer_tache(tache_id):
     conn.close()
     return redirect(url_for('read_tasks'))
 
-@app.route('/liste', methods=['GET', 'POST'])
-def liste():
-    import sqlite3
-    conn = sqlite3.connect('tasks.db')
-    cursor = conn.cursor()
-
-    if request.method == 'POST':
-        # Récupération titre, description et échéance [cite: 9, 10, 13]
-        cursor.execute('INSERT INTO taches (titre, desc, date) VALUES (?, ?, ?)',
-                       (request.form['t'], request.form['d'], request.form['e']))
-        conn.commit()
-
-    cursor.execute('SELECT * FROM taches')
-    taches = cursor.fetchall()
-    conn.close()
-    return render_template('affiche taches.html', taches=taches)
 if __name__ == "__main__":
   app.run(debug=True)
