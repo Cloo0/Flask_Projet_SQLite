@@ -164,6 +164,21 @@ def read_tasks():
     conn.close()
     return render_template('affiche_taches.html', taches=taches)
 
+@app.route('/terminer/<int:tache_id>', methods=['POST'])
+def terminer_tache(tache_id):
+    values = request.form.getlist('est_terminee')
+    est_terminee = 1 if '1' in values else 0
+
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute(
+        'UPDATE taches SET est_terminee = ? WHERE id = ?',
+        (est_terminee, tache_id)
+    )
+    conn.commit()
+    conn.close()
+    return redirect(url_for('read_tasks'))
+
 @app.route('/supprimer/<int:tache_id>', methods=['POST', 'GET'])
 def supprimer_tache(tache_id):
     conn = sqlite3.connect('database.db')

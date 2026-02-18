@@ -12,13 +12,28 @@
             <th>Description</th>
             <th>Échéance</th>
             <th>Statut</th>
+            <th>Terminée ?</th>
             <th>Actions</th>
         </tr>
         {% for tache in taches %}
         <tr class="{{ 'termine' if tache[4] else '' }}">
-            <td>{{ tache[1] }}</td> <td>{{ tache[2] }}</td> <td>{{ tache[3] }}</td> <td>{{ "Terminée" if tache[4] else "En cours" }}</td>
+            <td>{{ tache[1] }}</td>
+            <td>{{ tache[2] }}</td>
+            <td>{{ tache[3] }}</td>
+            <td>{{ "Terminée" if tache[4] else "En cours" }}</td>
             <td>
-                <a href="/terminer/{{ tache[0] }}">✔</a> |
+                <form method="POST" action="/terminer/{{ tache[0] }}" style="display:inline;">
+                    <input type="hidden" name="est_terminee" value="0">
+                    <input
+                        type="checkbox"
+                        name="est_terminee"
+                        value="1"
+                        {% if tache[4] %}checked{% endif %}
+                        onchange="this.form.submit()"
+                    >
+                </form>
+            </td>
+            <td>
                 <a href="/supprimer/{{ tache[0] }}" style="color:red;">Supprimer</a>
             </td>
         </tr>
