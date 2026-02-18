@@ -5,7 +5,7 @@
 </head>
 <body>
     <h2>Nouvelle Tâche</h2>
-    <form action="/ajouter" method="POST">
+    <form method="POST" action="{{ url_for('add_task') }}">
         <input type="text" name="titre" placeholder="Titre de la tâche" required><br><br>
 
         <textarea name="description" placeholder="Description"></textarea><br><br>

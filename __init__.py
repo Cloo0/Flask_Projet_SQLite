@@ -137,32 +137,42 @@ def recherche_client():
         return render_template('read_data.html', data=test)
 
 @app.route('/formulaire_taches', methods=['GET', 'POST'])
+@app.route('/new-task', methods=['GET', 'POST'])
 def add_task():
     if request.method == 'POST':
-        nom = request.form['nom']
-        description = request.form['description']
+        titre = request.form['titre']
+        description = request.form.get('description', '')
+        date_echeance = request.form['date_echeance']
+
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO taches (nom, description) VALUES (?, ?)', (nom, description))
+        cursor.execute(
+            'INSERT INTO taches (titre, description, date_echeance) VALUES (?, ?, ?)',
+            (titre, description, date_echeance)
+        )
         conn.commit()
         conn.close()
-        return redirect('/consultation/')
+        return redirect(url_for('read_tasks'))
     else:
-        return render_template('formulaire_taches.html')
+        return render_template('formulaire_tache.html')
 
-@app.route('/afficher_taches')
+@app.route('/affiche_taches')
 def read_tasks():
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM taches;')
-    data = cursor.fetchall()
+    taches = cursor.fetchall()
     conn.close()
-    return render_template('read_data.html', data=data)
+    return render_template('affiche_taches.html', taches=taches)
 
-@app.route('/formulaire')
-def formulaire():
-    return render_template('formulaire tâche.html')
-
+@app.route('/supprimer/<int:tache_id>', methods=['POST', 'GET'])
+def supprimer_tache(tache_id):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM taches WHERE id = ?', (tache_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('read_tasks'))
 
 @app.route('/liste', methods=['GET', 'POST'])
 def liste():
