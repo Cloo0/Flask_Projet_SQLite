@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Liste des tâches</title>
+    <style>.termine { text-decoration: line-through; color: green; }</style>
+</head>
+<body>
+    <h1>Mes Tâches</h1>
+    <table border="1">
+        <tr>
+            <th>Titre</th>
+            <th>Description</th>
+            <th>Échéance</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+        {% for tache in taches %}
+        <tr class="{{ 'termine' if tache[4] else '' }}">
+            <td>{{ tache[1] }}</td> <td>{{ tache[2] }}</td> <td>{{ tache[3] }}</td> <td>{{ "Terminée" if tache[4] else "En cours" }}</td>
+            <td>
+                <a href="/terminer/{{ tache[0] }}">✔</a> |
+                <a href="/supprimer/{{ tache[0] }}" style="color:red;">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/formulaire">Ajouter une autre tâche</a> | <a href="/">Accueil</a>
+</body>
+</html>

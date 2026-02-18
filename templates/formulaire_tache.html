@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Ajouter une tâche</title>
+</head>
+<body>
+    <h2>Nouvelle Tâche</h2>
+    <form action="/ajouter" method="POST">
+        <input type="text" name="titre" placeholder="Titre de la tâche" required><br><br>
+
+        <textarea name="description" placeholder="Description"></textarea><br><br>
+
+        <label>Date d'échéance :</label>
+        <input type="date" name="date_echeance" required><br><br>
+
+        <button type="submit">Enregistrer</button>
+    </form>
+    <p><a href="/">Retour à l'accueil</a></p>
+</body>
+</html>

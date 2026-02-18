@@ -6,10 +6,18 @@ CREATE TABLE clients (
     prenom TEXT NOT NULL,
     adresse TEXT NOT NULL
 );
- DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     role TEXT NOT NULL DEFAULT 'user'
+);
+DROP TABLE IF EXISTS taches;
+CREATE TABLE taches (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    titre VARCHAR(100) NOT NULL,
+    description TEXT,
+    date_echeance DATE,
+    est_terminee BOOLEAN DEFAULT FALSE
 );

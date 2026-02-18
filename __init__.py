@@ -2,6 +2,7 @@ from flask import Flask, render_template_string, render_template, jsonify, reque
 from flask import render_template
 from flask import json
 from urllib.request import urlopen
+from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 import sqlite3
 
@@ -30,15 +31,28 @@ def create_account():
         username = request.form['username']
         password = request.form['password']
         role = request.form['role']
+        if not username or not password:
+            error = 'Username and password are required.'
+            return render_template('create_account.html', error=error)
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (username, password, role))
-        conn.commit()
-        conn.close()
-        session['authentifie'] = True
-        return redirect(url_for('lecture'))
-    return render_template('create_account.html')
+        try:
+            cursor.execute(
+                'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
+                (username, hashed_password, role)
+            )
+            conn.commit()
+            session['authentifie'] = True
+            redirect(url_for('lecture'))
+        except sqlite3.IntegrityError:
+            conn.rollback()
+            error = 'Username already exists. Please choose another one.'
+            return render_template('create_account.html', error=error)
+        finally:
+            conn.close()
+    return render_template('create_account.html', error=None)
 @app.route('/authentification', methods=['GET', 'POST'])
 def authentification():
     if request.method == 'POST':
@@ -122,5 +136,49 @@ def recherche_client():
     else:
         return render_template('read_data.html', data=test)
 
+@app.route('/formulaire_taches', methods=['GET', 'POST'])
+def add_task():
+    if request.method == 'POST':
+        nom = request.form['nom']
+        description = request.form['description']
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO taches (nom, description) VALUES (?, ?)', (nom, description))
+        conn.commit()
+        conn.close()
+        return redirect('/consultation/')
+    else:
+        return render_template('formulaire_taches.html')
+
+@app.route('/afficher_taches')
+def read_tasks():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM taches;')
+    data = cursor.fetchall()
+    conn.close()
+    return render_template('read_data.html', data=data)
+
+@app.route('/formulaire')
+def formulaire():
+    return render_template('formulaire tâche.html')
+
+
+@app.route('/liste', methods=['GET', 'POST'])
+def liste():
+    import sqlite3
+    conn = sqlite3.connect('tasks.db')
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        # Récupération titre, description et échéance [cite: 9, 10, 13]
+        cursor.execute('INSERT INTO taches (titre, desc, date) VALUES (?, ?, ?)',
+                       (request.form['t'], request.form['d'], request.form['e']))
+        conn.commit()
+
+    cursor.execute('SELECT * FROM taches')
+    taches = cursor.fetchall()
+    conn.close()
+    return render_template('affiche taches.html', taches=taches)
 if __name__ == "__main__":
   app.run(debug=True)
